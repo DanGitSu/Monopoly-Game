@@ -13,6 +13,7 @@ This requirement is urgent, as competitor companies have heard the rumours of th
 
 
 **SAMPLE I/O**
+
 Welcome to the Game Kiosk! Please make a selection from the menu:
 1.    Explore the catalogue.
 2.    View your customer record.
