@@ -5,7 +5,7 @@ public class Catalogue {
 	private Kiosk kiosk;
 	private List<Game> gamesAvailable;
 	private List<Game> gamesRented; 
-	private List<Genre> genres;
+	private List<Genre> genres = new ArrayList<Genre>();
 
     		// write your solution here
 
@@ -38,4 +38,26 @@ public class Catalogue {
             kiosk.use();
         }
 	}
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void addGenre(String name) {
+        genres.add(new Genre(name));
+    }
+    
+    public Genre findGenre(String sGenre) {
+        int index = 0;
+        for (Genre g : getGenres()){
+            if(g.getName().equals(sGenre)){
+                index = getGenres().indexOf(g);
+            }
+        }
+        return getGenres().get(index);
+    }
+
+    public void addGame(String title, int year, int price, Genre genre) {
+        gamesAvailable.add(new Game(title, year, price, genre));
+    }
 }
