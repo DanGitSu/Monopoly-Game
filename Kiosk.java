@@ -74,6 +74,8 @@ public class Kiosk {
             use();
         }
     }
+
+    // Add a game to the catalogue, also adds finds the genre (needs to add genre)
     private void cataAddGame() {
         System.out.println("\nAdding a new game.");
         System.out.print("Enter the title of the game: ");
@@ -84,7 +86,7 @@ public class Kiosk {
 
         System.out.println("Enter the genre: ");
         String sGenre = In.nextLine(); 
-        Genre genre = catalogue.findGenre(sGenre);
+        Genre genre = catalogue.findGenre(sGenre); // only finds genre
 
         System.out.println("Enter price: ");
         int price = In.nextInt();
@@ -92,7 +94,7 @@ public class Kiosk {
         catalogue.addGame(title, year, price, genre);
     }
 
-    private void cataRemoveGame(){
+    private void cataRemoveGame(){ // CURRENTLY WORKING ON THIS
         System.out.println("\nRemoving a game.");
         System.out.print("Enter the title of the game: ");
         String title = In.nextLine();
