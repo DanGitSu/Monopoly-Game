@@ -1,3 +1,4 @@
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,18 @@ public class Kiosk {
     Kiosk(){
         this.catalogue = new Catalogue(this);
         catalogue.addGenre("Modular Board");
-        catalogue.addGame("Dungeons & Dragons", 2017, 4, catalogue.findGenre("Modular Board"));
+        catalogue.addGenre("Hand Management");
+        catalogue.addGenre("Role Playing");
+        catalogue.addGenre("Action Queue");
+        catalogue.addGame("Robinson Crusoe",2012,3,catalogue.findGenre("Action Queue"));
+        catalogue.addGame("Talisman", 2007, 4, catalogue.findGenre("Role Playing"));
+        catalogue.addGame("Three Kingdoms Redux", 2014, 3, catalogue.findGenre("Hand Management"));
+        catalogue.addGame("Dungeons & Dragons", 2010, 4, catalogue.findGenre("Modular Board"));
+        catalogue.addGame("Elder Sign", 2011, 3, catalogue.findGenre("Modular Board"));
+
+        customers.add(new Customer(101, "Jaime", 10));
+        customers.add(new Customer(102, "Luke", 10));
+        customers.add(new Customer(103, "William", 1));
         use();
         
     }
@@ -55,32 +67,84 @@ public class Kiosk {
         boolean loop = true;
         while (loop){
             System.out.println("Welcome to the administration menu:\n"
-            + "1. List all customers.\n"
-            + "2. Add a customer.\n"
+            + "1. List all customers.\n" //implemented
+            + "2. Add a customer.\n" //implemented
             + "3. Remove a customer.\n"
-            + "4. List all games.\n"
+            + "4. List all games.\n" //implemented
             + "5. Add a game to the catalogue.\n" // IMPLEMENTED
-            + "6. Remove a game from the catalogue.\n"
+            + "6. Remove a game from the catalogue.\n" //IMPLEMENTED
             + "R. Return to the previous menu."); // IMPLEMENTED
 
             System.out.print("Enter a choice: ");
             String choice = In.nextLine();
 
             if(choice.equals("1")){
+                listCust();
             }
-            else if(choice.equals("2"));
+            else if(choice.equals("2")){
+                addCust();
+            }
             else if(choice.equals("3"));
-            else if(choice.equals("4"));
-            else if(choice.equals("5")){ //IMPLEMENTED
+            else if(choice.equals("4")){ //IMPLEMENTED
+                cataList();
+            }else if(choice.equals("5")){ //IMPLEMENTED
                 cataAddGame();
             }
-            else if(choice.equals("6")){
+            else if(choice.equals("6")){ //IMPLEMENTED
                 cataRemoveGame();
             }
             else if(choice.equals("R")){ //IMPLEMENTED
                 loop = false;
             }
         }
+    }
+    private void listCust(){
+        System.out.println("\nThe Kiosk has the following customers:");
+        for (Customer customer : customers) {
+            System.out.println(customer.toString());
+        }
+        System.out.println("");
+    }
+
+    private void addCust() {
+        System.out.println("\nAdding a new customer.");
+        System.out.print("Enter a new ID: ");
+        int id = In.nextInt();
+        while(true){
+            if (!custExists(id))break;
+            System.out.print("That customer already exists, please enter a new ID: ");
+            id = In.nextInt();
+        }
+        System.out.print("Enter the customer's name: ");
+        String name = In.nextLine();
+        System.out.print("Enter the customer's initial balance: ");
+        int balance = In.nextInt();
+        customers.add(new Customer(id, name, balance));
+        System.out.println("Customer added.\n");
+    }
+
+    
+    public boolean custExists(int id) {
+        for (Customer customer : customers) {
+            if (customer.getID()==id) return true;
+        }
+        return false;
+    }
+
+    private void cataList() {
+        System.out.println("\nThe Kiosk has the following games:");
+        List<Game> gameAvailable = catalogue.getGamesAvailable();
+        for (Game game : gameAvailable) {
+            System.out.println(game.toString());
+        }
+        System.out.println("");
+    }
+
+    public Customer findCust(int id){
+        for (Customer customer : customers) {
+            if(customer.getID()==id) return customer;
+        }
+        return null;
     }
 
     // Add a game to the catalogue, also adds finds the genre (needs to add genre)
@@ -92,14 +156,19 @@ public class Kiosk {
         System.out.print("Enter the year: ");
         int year = In.nextInt();
 
-        System.out.println("Enter the genre: ");
+        System.out.print("Enter the genre: ");
         String sGenre = In.nextLine(); 
         Genre genre = catalogue.findGenre(sGenre); // only finds genre
 
-        System.out.println("Enter price: ");
+        System.out.print("Enter price: ");
         int price = In.nextInt();
-
-        catalogue.addGame(title, year, price, genre);
+        if (!catalogue.exists(title, year)){ //prevents double add
+            catalogue.addGame(title, year, price, genre);
+            System.out.println("Added " + title + " to catalogue.\n");
+        }else {
+            System.out.println("The game is already in the catalogue.");
+        }
+        
     }
 
     private void cataRemoveGame(){ // CURRENTLY WORKING ON THIS

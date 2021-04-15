@@ -34,16 +34,73 @@ public class Catalogue {
             else if(choice.equals("3"));
             else if(choice.equals("4"));
             else if(choice.equals("5"));
-            else if(choice.equals("6"));
-            else if(choice.equals("7"));
+            else if(choice.equals("6")){
+                rentGame();
+            }
+            else if(choice.equals("7")){
+                returnGame();
+            }
             else if(choice.equals("R")){
                 loop = false;
             }
         }
 	}
 
+    private void rentGame() {
+        System.out.print("\nEnter a valid customer ID: ");
+        int id = In.nextInt();
+        while(true){
+            if (kiosk.custExists(id))break;
+            System.out.print("Enter a valid customer ID: ");
+            id = In.nextInt();
+        }
+        System.out.print("Enter the title of the game you wish to rent: ");
+        String title = In.nextLine();
+        if (isGameAvailable(findGame(title))){
+            Game g = findGame(title);
+            gamesRented.add(g);
+            kiosk.findCust(id).rentGame(g);
+            System.out.println("Game rented.\n");
+        }else{
+            System.out.println("That game is not available or doesn't exist.\n");
+        }
+    }
+
+    private void returnGame(){
+        System.out.print("\nEnter a valid customer ID: ");
+        int id = In.nextInt();
+        while(true){
+            if (kiosk.custExists(id))break;
+            System.out.print("Enter a valid customer ID: ");
+            id = In.nextInt();
+        }
+        Customer c = kiosk.findCust(id);
+        System.out.println(c.getName() +" has the following games:");
+        System.out.println("Games currently rented by Jaime:");
+        for (Game g: c.getCurrentlyRented()) {
+            System.out.println(g.toString());
+        }
+        System.out.print("Enter the title of the game you wish to return: ");
+        String title = In.nextLine();
+        Game g = findGame(title);
+        gamesRented.remove(g);
+        c.returnGame(g);
+        System.out.println(title + " has been returned.\n");
+    }
+
+    private boolean isGameAvailable(Game g){
+        for (Game game : gamesRented) {
+            if(game.equals(g)) return false;
+        }
+        return true;
+    }
+
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public List<Game> getGamesAvailable() {
+        return gamesAvailable;
     }
 
     public void addGenre(String name) {
@@ -77,5 +134,19 @@ public class Catalogue {
             if(g.getTitle().equals(title) && g.getYear() == year) return gamesAvailable.indexOf(g);
         }
         return 0; // error code
+    }
+
+    public boolean exists(String title, int year){
+        for (Game g : gamesAvailable){
+            if(g.getTitle().equals(title) && g.getYear() == year) return true;
+        }
+        return false;
+    }
+
+    public Game findGame(String title) {
+        for (Game game : gamesAvailable) {
+            if(game.getTitle().equals(title)) return game;
+        }
+        return null;
     }
 }

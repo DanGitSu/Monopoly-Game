@@ -15,7 +15,7 @@ public class Game {
 		this.price = price;
 		this.genre = genre;
 	}
-	
+
 	public Genre getGenre() {
 		return genre;
 	}
@@ -27,5 +27,10 @@ public class Game {
 	}
 	public int getYear() {
 		return year;
+	}
+
+	@Override
+	public String toString(){
+		return year + "\t" + title + "\t" + genre.getName() + "\t$" + price;
 	}
 }
