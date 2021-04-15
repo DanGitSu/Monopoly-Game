@@ -69,7 +69,7 @@ public class Catalogue {
         Genre g = toRemove.getGenre();
         int p = toRemove.getPrice();
         gamesAvailable.remove(toRemove);
-        return year + "    " + toRemove.getTitle() +"    "+ g.getName() + "    $" + p + " removed from catalogue.\n";
+        return year + "\t" + toRemove.getTitle() +"\t"+ g.getName() + "\t$" + p + " removed from catalogue.\n";
     }
 
     public int findGameIndex(String title, int year) {
