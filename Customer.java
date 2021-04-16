@@ -30,13 +30,23 @@ public class Customer {
 			return currentlyRented;
 		}
 
+		public List<Game> getRentingHistory() {
+			return rentingHistory;
+		}
+
 		public void rentGame(Game g){
 			currentlyRented.add(g);
 			rentingHistory.add(g);
+			this.balance-= g.getPrice();
 		}
 
 		public void returnGame(Game g){
 			currentlyRented.remove(g);
+		}
+
+		public int topUp(int amount) {
+			this.balance+=amount;
+			return this.balance;
 		}
 
 		@Override

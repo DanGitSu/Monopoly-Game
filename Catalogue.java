@@ -30,10 +30,18 @@ public class Catalogue {
             String choice = In.nextLine();
 
             if(choice.equals("1"));
-            else if(choice.equals("2"));
-            else if(choice.equals("3"));
-            else if(choice.equals("4"));
-            else if(choice.equals("5"));
+            else if(choice.equals("2")){
+                displayGames();
+            }
+            else if(choice.equals("3")){
+                displayGenres();
+            }
+            else if(choice.equals("4")){
+                displayGamesGenre();
+            }
+            else if(choice.equals("5")){
+                displayGamesYear();
+            }
             else if(choice.equals("6")){
                 rentGame();
             }
@@ -42,6 +50,8 @@ public class Catalogue {
             }
             else if(choice.equals("R")){
                 loop = false;
+            }else{
+                System.out.println("Please enter a number between 1 and 7 or press R to return to the previous menu.");
             }
         }
 	}
@@ -58,9 +68,13 @@ public class Catalogue {
         String title = In.nextLine();
         if (isGameAvailable(findGame(title))){
             Game g = findGame(title);
-            gamesRented.add(g);
-            kiosk.findCust(id).rentGame(g);
-            System.out.println("Game rented.\n");
+            if (g.getPrice() <= kiosk.findCust(id).getBalance()){
+                gamesRented.add(g);
+                kiosk.findCust(id).rentGame(g);
+                System.out.println("Game rented.\n");
+            }else{
+                System.out.println("You don't have sufficient funds to rent this game.\n");
+            }
         }else{
             System.out.println("That game is not available or doesn't exist.\n");
         }
@@ -149,4 +163,44 @@ public class Catalogue {
         }
         return null;
     }
+
+    public void displayGamesYear(){
+        System.out.print("\nEnter the year: ");
+        int year = In.nextInt();
+        System.out.println("The kiosk has the following games by that year:");
+        for (Game game : gamesAvailable) {
+            if(game.getYear() == year) System.out.println(game.toString());
+        }
+        System.out.println("");
+    }
+
+    public void displayGamesGenre(){
+        System.out.print("\nEnter a genre: ");
+        String genre = In.nextLine();
+        System.out.println("The kiosk has the following games in that genre:");
+        for (Game game : gamesAvailable) {
+            if(game.getGenre().getName().equals(genre)) System.out.println(game.toString());
+        }
+        System.out.println("");
+    }
+
+    public void displayGenres(){
+        System.out.println("\nThe Kiosk has games in the following genres:");
+        for (Genre genre : genres) {
+            System.out.println(genre.getName());
+        }
+        System.out.println("");
+    }
+
+    public void displayGames(){
+        System.out.println("\nThe following games are available:");
+        for (Game game : gamesAvailable) {
+            if (!gamesRented.contains(game)){
+                System.out.println(game.toString());
+            }
+        }
+        System.out.println("");
+    }
+
+    
 }

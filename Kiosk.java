@@ -16,10 +16,10 @@ public class Kiosk {
 
     Kiosk(){
         this.catalogue = new Catalogue(this);
-        catalogue.addGenre("Modular Board");
-        catalogue.addGenre("Hand Management");
-        catalogue.addGenre("Role Playing");
         catalogue.addGenre("Action Queue");
+        catalogue.addGenre("Role Playing");
+        catalogue.addGenre("Hand Management");
+        catalogue.addGenre("Modular Board");
         catalogue.addGame("Robinson Crusoe",2012,3,catalogue.findGenre("Action Queue"));
         catalogue.addGame("Talisman", 2007, 4, catalogue.findGenre("Role Playing"));
         catalogue.addGame("Three Kingdoms Redux", 2014, 3, catalogue.findGenre("Hand Management"));
@@ -52,14 +52,31 @@ public class Kiosk {
             }
             else if(choice.equals("2")) custRecordView(); //PARTIAL
             else if(choice.equals("3"));
-            else if(choice.equals("4"));
+            else if(choice.equals("4")) topUp();
             else if(choice.equals("5")) admin(); //IMPLEMENTED
             else if(choice.equals("X")){    //IMPLEMENTED
                 System.out.println("Thank you for using the Game Kiosk, do visit us again.");
                 loop = false;
+            }else{
+                System.out.println("Please enter a number between 1 and 5, or press X to exit.");
             }
         }
 	}
+
+    private void topUp() {
+        System.out.print("\nEnter a customer ID: ");
+        int id = In.nextInt();
+        Customer c = findCust(id);
+        System.out.print("Enter the top-up amount:");
+        int amount = In.nextInt();
+
+        int previous = c.getBalance();
+        int current = c.topUp(amount);
+        System.out.println("\nTransaction complete.");
+        System.out.println(c.getName()+"'s balance was: $" + previous);
+        System.out.println(c.getName()+"'s current balance is: $" + current);
+        System.out.println("");
+    }
     
     //ADMIN STUFF
 
@@ -84,7 +101,9 @@ public class Kiosk {
             else if(choice.equals("2")){
                 addCust();
             }
-            else if(choice.equals("3"));
+            else if(choice.equals("3")){
+                removeCust();
+            }
             else if(choice.equals("4")){ //IMPLEMENTED
                 cataList();
             }else if(choice.equals("5")){ //IMPLEMENTED
@@ -129,6 +148,18 @@ public class Kiosk {
             if (customer.getID()==id) return true;
         }
         return false;
+    }
+
+    private void removeCust(){
+        System.out.println("\nRemoving a customer.");
+        System.out.print("Enter a customer ID: ");
+        int id = In.nextInt();
+        if(custExists(id)){
+            customers.remove(findCust(id));
+            System.out.println("Customer removed.\n");
+        }else{
+            System.out.println("That customer does not exist.\n");
+        }
     }
 
     private void cataList() {
@@ -177,7 +208,12 @@ public class Kiosk {
         String title = In.nextLine();
         System.out.print("Enter the year: ");
         int year = In.nextInt();
-        System.out.println(catalogue.removeGame(title, year)); 
+        if (catalogue.exists(title, year)){
+            System.out.println(catalogue.removeGame(title, year)); 
+        }else{
+            System.out.println("No such game found.\n");
+        }
+        
     }
 
     //END ADMIN STUFF
@@ -187,15 +223,27 @@ public class Kiosk {
     // used to view a particular customers record
     private void custRecordView(){ // 2nd choice main menu 2. View your customer record 
         System.out.print("\nEnter a customer ID: ");
-        int in = In.nextInt();
+        int id = In.nextInt();
+        boolean match = false;
         
         for (Customer c : customers){
-            if(c.getID() == in){ 
-                // TODO ENTER CODE FOR WHEN ID MATCHING!!
+            if(c.getID() == id){ 
+                match = true;
+                System.out.println("ID: " + c.getID());
+                System.out.println("Name: " + c.getName());
+                System.out.println("Balance: $"+ c.getBalance());
+                System.out.println("Games currently rented by " + c.getName() +":");
+                for (Game game : c.getCurrentlyRented()) {
+                    System.out.println(game.toString());
+                }
+                System.out.println(c.getName()+ "'s renting history:");
+                for (Game game : c.getRentingHistory()){
+                    System.out.println(game.toString());
+                }
             }
+        }if (match == false) System.out.println("That customer does not exist.\n");else{
+            System.out.println("");
         }
-        // when no match found
-        System.out.println("That customer does not exist.\n");
     }
 
     //END CUSTOMER STUFF
